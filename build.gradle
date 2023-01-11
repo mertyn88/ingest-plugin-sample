@@ -1,0 +1,57 @@
+buildscript {
+    ext {
+        ES_VERSION = "8.5.2"
+        ROOT_PROJECT = "sample-ingest"
+    }
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.elasticsearch.gradle:build-tools:${ES_VERSION}"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation "org.elasticsearch:elasticsearch:${ES_VERSION}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    repositories {
+        flatDir {
+            dirs 'repos'
+        }
+    }
+}
+
+task buildPluginZip(type: Zip, dependsOn:[':jar']) {
+    archiveBaseName = "${ROOT_PROJECT}-1.0-SNAPSHOT"
+    classifier = 'plugin'
+    from 'build/libs'
+    from 'src/main/resources'
+}
+
+artifacts {
+    archives buildPluginZip
+}
+
+[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+[ compileJava, compileTestJava ]*.options*.compilerArgs = ['-Xlint:-options']
