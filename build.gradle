@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        ES_VERSION = "8.5.2"
+        ES_VERSION = "7.13.2"
         ROOT_PROJECT = "sample-ingest"
     }
 
